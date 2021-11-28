@@ -3,14 +3,17 @@ import sys
 from threading import Thread
 import json
 import os
+from MQTT_control_packets import CONNACK
 import MQTT_decoder
+import MQTT_database
 
 HOST = "127.0.0.1"
 PORT = 1883
 
 def main():
-    start_broker()
-    pass
+    MQTT_database.initialize_database()
+    MQTT_database.create_session('test')
+    #start_broker()
 
 def start_broker():
 
@@ -49,11 +52,12 @@ def client_thread(client_socket, ip, port):
     print(f'Incomming packet: {data}')
 
     packet_type = MQTT_decoder.decode(data)
-    print(f'Decoded packet: \n{packet_type}')
+    print(f'Decoded packet:')
+    print(json.dumps(packet_type, indent=4, sort_keys=False))
 
 
-
-
+    return_packet = CONNACK.encode(False, 0)
+    client_socket.send(return_packet)
 
 if __name__ == "__main__":
     main()
