@@ -47,6 +47,14 @@ def encode(session_present: bool = False, return_code: int = 0):
         return_code_text = "Reserved for future use"
         connect_return_code = "11111111"
 
+    decoded_packet = {
+        "Packet type": "CONNACK",
+        "Flags": flags,
+        "Session present": session_present,
+        "Return code": return_code_text
+    }
+    print(decoded_packet)
+
     packet = (
         packet_type
         + flags
@@ -55,13 +63,4 @@ def encode(session_present: bool = False, return_code: int = 0):
         + connect_return_code
     )
     encoded_packet = int(packet, 2).to_bytes((len(packet) + 7) // 8, byteorder="big")
-    decoded_packet = {
-        "Packet type": "CONNACK",
-        "Flags": flags,
-        "Session present": session_present,
-        "Return code": return_code_text
-    }
-
-    print(decoded_packet)
-
     return encoded_packet
