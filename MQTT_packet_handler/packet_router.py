@@ -1,5 +1,6 @@
 from MQTT_packet_handler import CONNECT
 from MQTT_packet_handler import SUBSCRIBE
+from MQTT_packet_handler import PINGREQ
 import sys
 
 def route_packet(incoming_packet: dict):
@@ -9,6 +10,8 @@ def route_packet(incoming_packet: dict):
         outgoing_packet = CONNECT.handle(incoming_packet)
     elif packet_type == "SUBSCRIBE":
         outgoing_packet = SUBSCRIBE.handle(incoming_packet)
+    elif packet_type == "PINGQREQ":
+        outgoing_packet = PINGREQ.handle()
     else:
         print(incoming_packet)
         sys.exit()
