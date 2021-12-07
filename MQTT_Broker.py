@@ -66,12 +66,12 @@ def start_broker():
         except socket.timeout:
             pass
         except KeyboardInterrupt:
-            if client_socket:
-                client_socket.close()
-            break
+            sys.exit()
 
 
 def client_thread(client_socket, ip, port):
+
+    client_ID = ""
 
     while True:
 
@@ -84,14 +84,23 @@ def client_thread(client_socket, ip, port):
 
             print(f"Incomming packet: {data}")
 
+            # Decode incoming packet
             incoming_packet = MQTT_decoder.decode(data)
-            print(f"Decoded incoming packet:")
-            print(json.dumps(incoming_packet, indent=4, sort_keys=False))
+            ##print(f"Decoded incoming packet:")
+            ##print(json.dumps(incoming_packet, indent=4, sort_keys=False))
 
-            outgoing_packet = packet_router.route_packet(incoming_packet)
+            if incoming_packet.get("Packet type") == "CONNECT":
+                client_ID = incoming_packet.get("Payload")
+
+            # Do events & encode outgoing packet
+            outgoing_packet = packet_router.route_packet(incoming_packet, client_ID)
+
+            # Send outgoing packet
+            print(f'Outgoing packet: {outgoing_packet}')
             client_socket.send(outgoing_packet)
         except KeyboardInterrupt:
             client_socket.close()
+            sys.exit()
             break
 
 if __name__ == "__main__":

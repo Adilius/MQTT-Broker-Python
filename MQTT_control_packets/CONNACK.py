@@ -53,7 +53,7 @@ def encode(session_present: bool = False, return_code: int = 0):
         "Session present": session_present,
         "Return code": return_code_text
     }
-    print(decoded_packet)
+    #print(decoded_packet)
 
     packet = (
         packet_type

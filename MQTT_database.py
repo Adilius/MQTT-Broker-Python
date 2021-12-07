@@ -9,7 +9,6 @@ def initialize_database():
         with open("db.json", "w+") as db:
             db.write('{ "Clients" : [], \n' + '  "Topics" : [] }')
 
-
 # Read contents of database file
 def read_database():
     # Read database file
@@ -18,20 +17,16 @@ def read_database():
 
     return database
 
-
 # Write content to database file
 def write_database(database):
     with open("db.json", "w") as file:
         json.dump(database, file, indent=4, sort_keys=True)
 
-
 # Check if session exists given client ID
 def session_exists(client_id: str):
 
     database = read_database()
-
     clients_list = database.get('Clients')
-
     for client in clients_list:
         if client_id in client:
             return True
@@ -42,11 +37,10 @@ def session_get(client_id: str):
 
     database = read_database()
 
-    clients_lits = database.get('Clients')
+    clients_list = database.get('Clients')
 
-    for client in clients_lits:
+    for client in clients_list:
         if client_id in client:
-            print(client[client_id])
             return client
 
 # Create blank session given client ID
@@ -85,6 +79,32 @@ def session_delete(client_id: str):
         write_database(database)
         return True
     return False
+
+# Add topic to session
+def session_add_topic(client_id: str, topics: list):
+
+    # Safety check
+    if session_exists(client_id) == False:
+        return False
+
+    # Get list of clients
+    database = read_database()
+    clients_list = database.get("Clients")
+
+    # Unpack topics to add (removing QoS request)
+    unpacked_topics = []
+    for topic in topics:
+        unpacked_topics.extend(topic)
+
+    # Find client and add topics to their subscriptions
+    for index, client in enumerate(clients_list):
+        if client_id in client:
+            client_variables = next(iter(client.values()))
+            client_variables['Subscriptions'] = client_variables['Subscriptions'] + unpacked_topics
+            clients_list[index][client_id] = client_variables
+
+    database.update({"Clients": clients_list})
+    write_database(database)
 
 # Delete all sessions
 def session_delete_all():

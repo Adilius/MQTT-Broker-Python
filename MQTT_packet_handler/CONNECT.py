@@ -1,7 +1,7 @@
 from MQTT_control_packets import CONNACK
 import MQTT_database
 
-def handle(incoming_packet: dict):
+def handle(incoming_packet: dict, client_ID: str):
 
     # Get protocol name
     protocol_name = incoming_packet.get('Protocol name')
@@ -31,4 +31,7 @@ def handle(incoming_packet: dict):
             outgoing_packet = CONNACK.encode(session_present=True, return_code=0)
         else:
             outgoing_packet = CONNACK.encode(session_present=False, return_code=0)
+    
+    print(f'Client ID ({client_ID}) connected.')
+
     return outgoing_packet
