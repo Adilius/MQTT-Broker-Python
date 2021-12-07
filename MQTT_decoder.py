@@ -2,11 +2,10 @@ import MQTT_binary
 import MQTT_control_packets
 from MQTT_control_packets import CONNECT
 from MQTT_control_packets import SUBSCRIBE
+from MQTT_control_packets import UNSUBSCRIBE
 
 
 def decode(bytes):
-
-    # print(f'Packet length: {len(bytes)}')
 
     # Buffer to hold decoded values from packet
     decoded_packet = {}
@@ -96,5 +95,8 @@ def decode(bytes):
     elif packet_type == "SUBSCRIBE":
         subscribe_message = SUBSCRIBE.decode(bytes[current_byte:])
         decoded_packet.update(subscribe_message)
+    elif packet_type == "UNSUBSCRIBE":
+        unsubscribe_message = UNSUBSCRIBE.decode(bytes[current_byte:])
+        decoded_packet.update(unsubscribe_message)
 
     return decoded_packet

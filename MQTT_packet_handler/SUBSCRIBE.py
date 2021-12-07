@@ -29,11 +29,10 @@ def handle(incoming_packet: dict, client_ID: str):
         if not MQTT_database.topic_exists(topic_name):
             return_codes.append("10000000")    # Failure
         else:
+            # Add subscription to client
+            MQTT_database.session_add_topic(client_ID, topic_name)
             return_codes.append("00000000")   # QoS 0
 
-    # Add subscription to client
-    MQTT_database.session_add_topic(client_ID, topics)
-    
     # Create packet
     outgoing_packet = SUBACK.encode(packet_identifier, return_codes)
     return outgoing_packet

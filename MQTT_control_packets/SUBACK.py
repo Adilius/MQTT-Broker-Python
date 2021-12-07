@@ -1,5 +1,4 @@
 import MQTT_binary
-import MQTT_database
 
 def encode(packet_identifier: int, return_codes: list):
 
@@ -29,5 +28,3 @@ def encode(packet_identifier: int, return_codes: list):
 
     encoded_packet = int(packet, 2).to_bytes((len(packet) + 7) // 8, byteorder="big")
     return encoded_packet
-    
-    print(topics)

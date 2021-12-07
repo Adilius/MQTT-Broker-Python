@@ -101,7 +101,6 @@ def client_thread(client_socket, ip, port):
         except KeyboardInterrupt:
             client_socket.close()
             sys.exit()
-            break
 
 if __name__ == "__main__":
     main()

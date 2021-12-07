@@ -27,7 +27,6 @@ def decode(bytes):
     # While we have at least 6 bytes ahead of us
     while current_byte+6 <= len(bytes):
 
-
         # Topic filter length
         topic_filter_length_bytes_1 = bytes[current_byte]
         topic_filter_length_bits_1 = format(topic_filter_length_bytes_1, "08b")
