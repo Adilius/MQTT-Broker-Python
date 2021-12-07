@@ -12,14 +12,16 @@ import time
 HOST = "127.0.0.1"
 PORT = 1883
 
+connected_clients = []
+
 
 def main():
     # Initialize database
     MQTT_database.initialize_database()
 
     # Create dummy session and topic
-    MQTT_database.session_create("test1")
-    MQTT_database.topic_create('Temperature', 'number')
+    #MQTT_database.session_create("test1")
+    MQTT_database.topic_create('Temperature')
 
     # Delete all sessions and topics
     #MQTT_database.topic_delete_all()
@@ -71,6 +73,8 @@ def start_broker():
 
 def client_thread(client_socket, ip, port):
 
+    global connected_clients
+
     client_ID = ""
 
     while True:
@@ -80,27 +84,42 @@ def client_thread(client_socket, ip, port):
             data = client_socket.recv(1024)
             if not data:
                 time.sleep(0.5)
+                print("sleep")
                 break
 
-            print(f"Incomming packet: {data}")
+            #print(f"Incomming packet: {data}")
 
             # Decode incoming packet
             incoming_packet = MQTT_decoder.decode(data)
-            ##print(f"Decoded incoming packet:")
-            ##print(json.dumps(incoming_packet, indent=4, sort_keys=False))
 
             if incoming_packet.get("Packet type") == "CONNECT":
                 client_ID = incoming_packet.get("Payload")
+                connected_clients.append((client_ID, client_socket))
+
+            if incoming_packet.get("Packet type") == "DISCONNECT":
+                connected_clients = [client for client in connected_clients if client_ID not in client]
 
             # Do events & encode outgoing packet
             outgoing_packet = packet_router.route_packet(incoming_packet, client_ID)
+            #print(f'Outgoing packet: {outgoing_packet}')
+
 
             # Send outgoing packet
-            print(f'Outgoing packet: {outgoing_packet}')
-            client_socket.send(outgoing_packet)
+            if incoming_packet.get("Packet type") == "PUBLISH":
+                send_to_all_connected(outgoing_packet)
+            else:
+                client_socket.send(outgoing_packet)
+
         except KeyboardInterrupt:
             client_socket.close()
             sys.exit()
 
+
+def send_to_all_connected(packet: bytes):
+    global connected_clients
+
+    for client in connected_clients:
+        client_ID, client_socket = client
+        client_socket.send(packet)
 if __name__ == "__main__":
     main()

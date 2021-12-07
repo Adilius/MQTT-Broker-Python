@@ -1,8 +1,8 @@
 import MQTT_binary
-import MQTT_control_packets
 from MQTT_control_packets import CONNECT
 from MQTT_control_packets import SUBSCRIBE
 from MQTT_control_packets import UNSUBSCRIBE
+from MQTT_control_packets import PUBLISH
 
 
 def decode(bytes):
@@ -98,5 +98,8 @@ def decode(bytes):
     elif packet_type == "UNSUBSCRIBE":
         unsubscribe_message = UNSUBSCRIBE.decode(bytes[current_byte:])
         decoded_packet.update(unsubscribe_message)
+    elif packet_type == "PUBLISH":
+        publish_message = PUBLISH.decode(bytes=bytes[current_byte:], packet_length=packet_length, flags=flags_bits)
+        decoded_packet.update(publish_message)
 
     return decoded_packet

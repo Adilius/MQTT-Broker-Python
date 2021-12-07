@@ -80,6 +80,23 @@ def session_delete(client_ID: str):
         return True
     return False
 
+# Get topics from session
+def session_get_topic(client_ID):
+
+    # Safety check
+    if session_exists(client_ID) == False:
+        return False
+
+    # Get list of clients
+    database = read_database()
+    clients_list = database.get("Clients")
+
+    # Find client and get topics from their subscriptions
+    for client in clients_list:
+        if client_ID in client:
+            client_variables = next(iter(client.values()))
+            return client_variables['Subscriptions']
+
 # Add topic to session
 def session_add_topic(client_ID: str, topic: str):
 
@@ -140,45 +157,35 @@ def topic_exists(topic_name: str):
             return True
     return False
 
-# Create topic 
-def topic_create(topic_name: str, data_type: str):
-
-    if topic_exists(topic_name):
-        return False
-
-    if data_type == 'string':
-        topic = {
-            topic_name : ""
-        }
-    elif data_type == 'number':
-        topic = {
-            topic_name : 0
-        }
-    elif data_type == "object":
-        topic = {
-            topic_name : {}
-        }
-    elif data_type == "array":
-        topic = {
-            topic_name : []
-        }
-    elif data_type == "boolean":
-        topic = {
-            topic_name : False
-        }
-    elif data_type == 'null':
-        topic = {
-            topic_name : None
-        }
-    else:
-        return False
+# Udpate value to topic
+def topic_update_value(topic_name: str, payload: str):
 
     database = read_database()
     topics_list = database.get('Topics')
-    topics_list.append(topic)
-    database.update({"Topics":topics_list})
-    write_database(database)
-    return True
+    for index, topic in enumerate(topics_list):
+        if topic_name in topic.keys():
+            topic = {topic_name : payload}
+            topics_list[index] = topic
+            database.update({"Topics":topics_list})
+            write_database(database)
+            return True
+    return False
+
+# Create topic 
+def topic_create(topic_name: str):
+
+    topic = {
+        topic_name : ""
+    }
+
+    database = read_database()
+    topics_list = database.get('Topics')
+    for topic in topics_list:
+        if topic_name not in topic:
+            topics_list.append(topic)
+            database.update({"Topics":topics_list})
+            write_database(database)
+            return True
 
 # Delete topic
 def topic_delete(topic_name: str):
