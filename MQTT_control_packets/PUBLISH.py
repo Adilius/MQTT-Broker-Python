@@ -59,9 +59,7 @@ def encode(topic: str, payload:str):
 
     # Packet length
     packet_length = len(topic) + len(payload) + 2
-    print(f'{packet_length}')
     packet_length_bits = format(packet_length, "08b")
-    print(f'{packet_length_bits=}')
 
     # Topic length
     topic_length = format(len(topic), "016b")
@@ -80,8 +78,6 @@ def encode(topic: str, payload:str):
         topic_bits +
         payload_bits
     )
-
-    print(packet)
 
     encoded_packet = int(packet, 2).to_bytes((len(packet) + 7) // 8, byteorder="big")
     return encoded_packet

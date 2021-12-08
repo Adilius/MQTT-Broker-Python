@@ -9,7 +9,7 @@ def handle(incoming_packet: dict, client_ID: str):
 
     # Update topic
     if MQTT_database.topic_update_value(topic, payload):
-        print(f'Topic {topic} updated value to: {payload}')
+        print(f'Client ID ({client_ID}) updated topic ({topic}) updated value to: {payload}')
 
     # Create publish packet
     outgoing_packet = PUBLISH.encode(topic, payload)
