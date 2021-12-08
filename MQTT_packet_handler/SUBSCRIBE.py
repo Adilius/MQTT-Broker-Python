@@ -31,6 +31,7 @@ def handle(incoming_packet: dict, client_ID: str):
         else:
             # Add subscription to client
             MQTT_database.session_add_topic(client_ID, topic_name)
+            print(f'Client ID ({client_ID}) subscribed to ({topic_name})')
             return_codes.append("00000000")   # QoS 0
 
     # Create packet
