@@ -188,7 +188,6 @@ def topic_create(topic_name: str):
     for topic in topics_list:
         key = next(iter(topic))
         topics_keys_list.append(key)
-    print(topics_keys_list)
 
     # Check if new topic doesn't already exist
     if topic_name not in topics_keys_list:
