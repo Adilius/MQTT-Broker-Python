@@ -22,6 +22,7 @@ def main():
     # Create dummy session and topic
     #MQTT_database.session_create("test1")
     MQTT_database.topic_create('Temperature')
+    MQTT_database.topic_create('Humidity')
 
     # Delete all sessions and topics
     #MQTT_database.topic_delete_all()
