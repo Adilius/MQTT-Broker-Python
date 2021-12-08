@@ -164,7 +164,6 @@ def topic_update_value(topic_name: str, payload: str):
             topics_list[index] = topic
             database.update({"Topics":topics_list})
             write_database(database)
-            print("hello")
             return True
     return False
 
