@@ -51,11 +51,7 @@ def session_create(client_ID: str):
 
     session_state = {
         client_ID: {
-            "Subscriptions": [],
-            "NEEDACK": [],
-            "NEEDSEND12": [],
-            "SENDACK": [],
-            "NEEDSEND0": []
+            "Subscriptions": []
         }
     }
 
@@ -168,24 +164,39 @@ def topic_update_value(topic_name: str, payload: str):
             topics_list[index] = topic
             database.update({"Topics":topics_list})
             write_database(database)
+            print("hello")
             return True
     return False
 
 # Create topic 
 def topic_create(topic_name: str):
 
-    topic = {
-        topic_name : ""
-    }
+    topic_new = {topic_name:""}
 
+    # Get existing topics
     database = read_database()
     topics_list = database.get('Topics')
+
+    # If list is empty, we dont need to check duplicates
+    if len(topics_list) == 0:
+        topics_list.append(topic_new)
+        database.update({"Topics":topics_list})
+        write_database(database)
+        return True
+
+    # Gather all topic names
+    topics_keys_list = []
     for topic in topics_list:
-        if topic_name not in topic:
-            topics_list.append(topic)
-            database.update({"Topics":topics_list})
-            write_database(database)
-            return True
+        key = next(iter(topic))
+        topics_keys_list.append(key)
+    print(topics_keys_list)
+
+    # Check if new topic doesn't already exist
+    if topic_name not in topics_keys_list:
+        topics_list.append(topic_new)
+        database.update({"Topics":topics_list})
+        write_database(database)
+        return True
 
 # Delete topic
 def topic_delete(topic_name: str):
