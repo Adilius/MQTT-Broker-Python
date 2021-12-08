@@ -1,6 +1,5 @@
-from MQTT_control_packets import PUBACK, PUBLISH
+from MQTT_control_packets import PUBLISH
 import MQTT_database
-import sys
 
 def handle(incoming_packet: dict, client_ID: str):
 

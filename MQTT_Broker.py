@@ -1,9 +1,6 @@
 import socket
 import sys
 from threading import Thread
-import json
-import os
-from MQTT_control_packets import CONNACK
 import MQTT_decoder
 import MQTT_database
 from MQTT_packet_handler import packet_router
