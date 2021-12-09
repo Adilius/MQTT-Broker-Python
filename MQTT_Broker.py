@@ -5,6 +5,7 @@ import MQTT_decoder
 import MQTT_database
 from MQTT_packet_handler import packet_router
 import time
+from MQTT_control_packets import PUBLISH
 
 HOST = "127.0.0.1"
 PORT = 1883
@@ -107,6 +108,16 @@ def client_thread(client_socket, ip, port):
                 send_to_all_connected(outgoing_packet)
             else:
                 client_socket.send(outgoing_packet)
+
+            # Send publish packet that has been retained to new subscribers
+            if incoming_packet.get("Packet type") == "SUBSCRIBE":
+                topic = incoming_packet.get('Topics')[0]
+                topic = next(iter(topic))
+                if topic in MQTT_database.session_get_topic(client_ID):
+                    if MQTT_database.topic_exists(topic):
+                        value = MQTT_database.topic_get_value(topic)
+                        outgoing_packet = PUBLISH.encode(topic, value)
+                        client_socket.send(outgoing_packet)
 
         except KeyboardInterrupt:
             client_socket.close()

@@ -215,7 +215,20 @@ def topic_delete(topic_name: str):
 
 # Delete all topics
 def topic_delete_all():
+
     database = read_database()
     database.update({'Topics':[]})
     write_database(database)
     return True
+
+# Get topic value
+def topic_get_value(topic_name: str):
+
+    database = read_database()
+    topics_list = database.get('Topics')
+    for index, topic in enumerate(topics_list):
+        if topic_name in topic.keys():
+            value = next(iter(topic.values()))
+
+            return value
+    return False
