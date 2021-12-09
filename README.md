@@ -19,3 +19,16 @@ python .\MQTT_Broker.py
 * Subscribe/Unsubscribe
 * Ping request/response
 * Publish
+
+
+## Demo
+Terminal running broker:
+
+![MQTT_terminal](https://user-images.githubusercontent.com/43440295/145275297-c0d9b035-be59-4098-b6bc-042f79f096a7.gif)
+
+
+
+
+Testing broker using an [MQTT client](https://mqttfx.jensd.de/) (seperate run from above gif)
+
+![MQTT_client](https://user-images.githubusercontent.com/43440295/145275334-49d38634-4f2a-42c0-a66a-8f4dfb66cb6a.gif)
