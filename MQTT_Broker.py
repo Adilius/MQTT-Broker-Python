@@ -6,6 +6,7 @@ import MQTT_database
 from MQTT_packet_handler import packet_router
 import time
 from MQTT_control_packets import PUBLISH
+import MQTT_packet_handler
 
 HOST = "127.0.0.1"
 PORT = 1883
@@ -80,10 +81,15 @@ def client_thread(client_socket, ip, port):
 
         try:
             # Listen to incoming data
-            data = client_socket.recv(1024)
+            try:
+                data = client_socket.recv(1024)
+            except:
+                print(f'Client ({client_ID}) unexpected disconnect.')
+                connected_clients = [client for client in connected_clients if client_ID not in client]
+                sys.exit()
             if not data:
                 time.sleep(0.5)
-                print("sleep")
+                print(f"Client ({client_ID}) went to sleep")
                 break
 
             #print(f"Incomming packet: {data}")

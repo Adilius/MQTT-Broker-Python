@@ -129,7 +129,10 @@ def session_remove_topic(client_ID: str, topic: str):
     for index, client in enumerate(clients_list):
         if client_ID in client:
             client_variables = next(iter(client.values()))
-            client_variables['Subscriptions'].remove(topic)
+            try:
+                client_variables['Subscriptions'].remove(topic)
+            except:
+                print(f'Could not to remove subscription ({topic}) from client ({client_ID})')
             clients_list[index][client_ID] = client_variables
 
     database.update({"Clients": clients_list})
